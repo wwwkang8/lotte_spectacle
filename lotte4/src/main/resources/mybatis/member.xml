@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sql Mapper -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+
+	<resultMap type="memberVO" id="memberRM">
+		<result property="memberId" column="id" />
+		<result property="password" column="password" />
+		<result property="name" column="name" />
+		<result property="phoneNumber" column="phoneNumber" />
+		<result property="sms" column="sms" />
+	</resultMap>
+	
+	<resultMap type="logVO" id="logRM">
+		<result property="logIdx" column="log_idx"/>
+		<result property="logTime" column="log_time"/>
+		<result property="logId" column="log_id"/>
+		<result property="logName" column="log_name"/>
+		<result property="logPhoneNumber" column="log_phoneNumber"/>
+	</resultMap>
+	
+	<select id="checkId" resultType="int">
+		select count(*) from lotte_member where id=#{id}
+	</select>
+	
+	<insert id="registerMember" parameterType="memberVO">
+		insert into LOTTE_MEMBER(id, password, name, phoneNumber, sms)
+		values(#{memberId},#{password},#{name},#{phoneNumber},#{sms})
+	</insert>
+	
+	<select id="findMemberById" parameterType="string" resultType="memberVO">
+		select * from lotte_member where id=#{value}
+	
+	</select>
+	
+	<select id="memberLogin" resultMap="memberRM" resultType="memberVO">
+		select * from lotte_member where id=#{memberId}
+	</select>
+	
+	<update id="updateMember" parameterType="memberVO">
+		update lotte_member set name=#{name} ,password=#{password}, phoneNumber=#{phoneNumber},
+		sms=#{sms}
+	</update>
+	
+	<insert id="addLog" parameterType="logVO">
+		<selectKey keyProperty="logIdx" resultType="String" order="BEFORE">
+			select log_seq.nextval from dual
+		</selectKey>
+		<!-- <selectKey keyProperty="no" resultType="String" order="BEFORE">
+			select freeboard_seq.nextval from dual
+		</selectKey> -->
+		insert into log_info(log_idx, log_time, log_id, log_name, log_phoneNumber)
+		values(#{logIdx},sysdate,#{logId},#{logName},#{logPhoneNumber})
+	</insert>
+	
+	<select id="getLogList" parameterType="String" resultType="logVO" resultMap="logRM">
+		select l.log_idx, to_char(log_time,'YYYY.MM.DD.HH:MM:SS') as log_time,
+		l.log_id, l.log_name, l.log_phoneNumber from lotte_member m, log_info l where m.id=l.log_id and l.log_id=#{memberId}
+		order by l.log_time desc
+	</select>
+	
+</mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
